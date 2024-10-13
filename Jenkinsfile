@@ -30,7 +30,7 @@ pipeline {
                 script {
                     // Directly SSH using the private key
                     sh """
-                    ssh -i /var/lib/jenkins/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@<your_test_server_public_ip> \\
+                    ssh -i /var/lib/jenkins/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@44.223.169.199 \\
                         'docker pull $DOCKER_IMAGE_NAME:latest && \\
                         docker stop myapp || true && \\
                         docker rm myapp || true && \\
