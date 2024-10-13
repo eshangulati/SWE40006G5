@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from GitHub
-                git url: 'https://github.com/eshangulati/SWE40006G5.git'
+                git branch: 'main', url: 'https://github.com/eshangulati/SWE40006G5.git'
             }
         }
 
