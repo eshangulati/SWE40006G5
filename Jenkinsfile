@@ -8,37 +8,48 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from GitHub
-                git branch: 'main', url: 'https://github.com/eshangulati/SWE40006G5.git'
+                git url: 'https://github.com/eshangulati/SWE40006G5.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                // Build the Docker image
                 sh 'docker build -t $DOCKER_IMAGE_NAME:latest .'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                // Run the tests using pytest in a container
+                // Run the tests inside the Docker container
                 sh 'docker run --rm $DOCKER_IMAGE_NAME pytest tests/'
             }
         }
+
         stage('Deploy to Test Server') {
             steps {
-                sshagent(['test-server-ssh']) {
-                // Use SSH to connect to the test server and deploy the app
-                sh """
-                ssh -o StrictHostKeyChecking=no ec2-user@44.223.169.199 \\
-                    'docker pull $DOCKER_IMAGE_NAME:latest && \\
-                    docker stop myapp || true && \\
-                    docker rm myapp || true && \\
-                    docker run -d --name myapp -p 80:80 $DOCKER_IMAGE_NAME:latest'
-                """
+                script {
+                    // Directly SSH using the private key
+                    sh """
+                    ssh -i /var/lib/jenkins/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@<your_test_server_public_ip> \\
+                        'docker pull $DOCKER_IMAGE_NAME:latest && \\
+                        docker stop myapp || true && \\
+                        docker rm myapp || true && \\
+                        docker run -d --name myapp -p 80:80 $DOCKER_IMAGE_NAME:latest'
+                    """
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed!'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
