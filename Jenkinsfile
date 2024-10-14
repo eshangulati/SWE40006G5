@@ -31,10 +31,10 @@ pipeline {
                     // Directly SSH using the private key
                     sh """
                     ssh -i /var/lib/jenkins/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@44.223.169.199 \\
-                        'docker pull $DOCKER_IMAGE_NAME:latest && \\
+                        'docker pull buffy1809/myapp:latest && \\
                         docker stop myapp || true && \\
                         docker rm myapp || true && \\
-                        docker run -d --name myapp -p 80:80 $DOCKER_IMAGE_NAME:latest'
+                        docker run -d --name myapp -p 80:80 buffy1809/myapp:latest'
                     """
                 }
             }
