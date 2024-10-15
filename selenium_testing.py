@@ -1,3 +1,4 @@
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -34,3 +35,16 @@ class MyAppTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    stage('Run Selenium Tests') {
+            steps {
+                // Start both app and Selenium services with Docker Compose
+                sh 'docker-compose up -d'
+                
+                // Run Selenium tests inside the app container
+                sh 'docker-compose run --rm app pytest selenium_tests/'
+                
+                // Stop and clean up the containers
+                sh 'docker-compose down'
+            }
+        }
