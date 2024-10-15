@@ -1,11 +1,16 @@
 from flask import Flask, request
 from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Counter
 
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)  # Add this line to expose metrics
 
+c = Counter('python_request_operations_total', 'The total number of processed requests')
+
+
 @app.route('/')
 def hello_world():
+    c.inc()
     return """
         <!DOCTYPE html>
         <html data-theme="light">
@@ -147,6 +152,10 @@ def random():
         </body>
         </html>
     """
+
+@app.route('/metrics')
+def metrics():
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
