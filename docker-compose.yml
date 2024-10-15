@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    image: myapp:latest
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    depends_on:
+      - app
+    networks:
+      - app-network
+    ports:
+      - "4444:4444"  # Expose Selenium WebDriver
+    environment:
+      - START_XVFB=false
+
+networks:
+  app-network:
+    driver: bridge

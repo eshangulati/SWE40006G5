@@ -28,6 +28,19 @@ pipeline {
             }
         }
 
+        stage('Run Selenium Tests') {
+            steps {
+                // Start both app and Selenium services with Docker Compose
+                sh 'docker-compose up -d'
+                
+                // Run Selenium tests inside the app container
+                sh 'docker-compose run --rm app pytest selenium_tests/'
+                
+                // Stop and clean up the containers
+                sh 'docker-compose down'
+            }
+        }
+
         stage('Deploy to Test Server') {
             steps {
                 script {
