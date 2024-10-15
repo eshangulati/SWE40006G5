@@ -3,6 +3,9 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = 'myapp'
+        TEST_SERVER_IP = '44.223.169.199'
+        PRODUCTION_SERVER_IP = '3.213.22.15'
+        SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa'
     }
 
     stages {
@@ -30,7 +33,21 @@ pipeline {
                 script {
                     // Directly SSH using the private key
                     sh """
-                    ssh -i /var/lib/jenkins/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@44.223.169.199 \\
+                    ssh -i $SSH_KEY_PATH -o StrictHostKeyChecking=no ec2-user@$TEST_SERVER_IP \\
+                        'docker pull buffy1809/myapp:latest && \\
+                        docker stop myapp || true && \\
+                        docker rm myapp || true && \\
+                        docker run -d --name myapp -p 80:80 buffy1809/myapp:latest'
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to Production Server') {
+            steps {
+                script {
+                    sh """
+                    ssh -i $SSH_KEY_PATH -o StrictHostKeyChecking=no ec2-user@$PRODUCTION_SERVER_IP \\
                         'docker pull buffy1809/myapp:latest && \\
                         docker stop myapp || true && \\
                         docker rm myapp || true && \\
