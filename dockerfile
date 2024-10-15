@@ -4,6 +4,9 @@ FROM python:3.8-slim
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy the requirements file into the image
+COPY requirements.txt /app
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 
@@ -12,9 +15,6 @@ ENV PYTHONPATH=/app
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Install the Prometheus Flask Exporter
-RUN pip install prometheus-flask-exporter
 
 # Expose the port Flask runs on
 EXPOSE 80
