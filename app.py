@@ -1,6 +1,8 @@
 from flask import Flask, request
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)  # Add this line to expose metrics
 
 @app.route('/')
 def hello_world():
@@ -25,7 +27,7 @@ def hello_world():
             <main>
                 <h1>Home</h1>
                 <p>Welcome to my website</p>
-                <p>Click on the links above to perform some operations: add or multiply two number, or generate a random number between 1-1000</p>
+                <p>Click on the links above to perform some operations: add or multiply two numbers, or generate a random number between 1-1000</p>
             </main>
         </body>
         </html>
@@ -46,7 +48,7 @@ def add():
         <!DOCTYPE html>
         <html data-theme="light">
         <head>
-            <title>Add Two Number</title>
+            <title>Add Two Numbers</title>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css">
         </head>
         <body>
@@ -61,7 +63,7 @@ def add():
                 </nav>
             </header>
             <main>
-                <h1>Add Two Number</h1>
+                <h1>Add Two Numbers</h1>
                 <form method="post" action="add">
                     <input type="number" name="num1" placeholder="First number" value="{num1 if request.method == 'POST' else ''}"> <br>
                     <input type="number" name="num2" placeholder="Second number" value="{num2 if request.method == 'POST' else ''}"> <br>
@@ -88,7 +90,7 @@ def mul():
         <!DOCTYPE html>
         <html data-theme="light">
         <head>
-            <title>Multiply Two Number</title>
+            <title>Multiply Two Numbers</title>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css">
         </head>
         <body>
@@ -103,7 +105,7 @@ def mul():
                 </nav>
             </header>
             <main>
-                <h1>Multiply Two Number</h1>
+                <h1>Multiply Two Numbers</h1>
                 <form method="post" action="mul">
                     <input type="number" name="num1" placeholder="First number" value="{num1 if request.method == 'POST' else ''}"> <br>
                     <input type="number" name="num2" placeholder="Second number" value="{num2 if request.method == 'POST' else ''}"> <br>

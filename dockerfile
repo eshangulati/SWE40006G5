@@ -13,7 +13,8 @@ ENV PYTHONPATH=/app
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install selenium pytest
+# Install the Prometheus Flask Exporter
+RUN pip install prometheus-flask-exporter
 
 # Expose the port Flask runs on
 EXPOSE 80
