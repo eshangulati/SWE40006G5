@@ -8,10 +8,19 @@ class MyAppTests(unittest.TestCase):
     def setUp(self):
         # Set up remote connection to Selenium container
         chrome_options = webdriver.ChromeOptions()
+        
+        # Add headless mode to reduce load
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-gpu")  # Optional: further reduce load
+        
         self.driver = webdriver.Remote(
             command_executor='http://selenium:4444/wd/hub',
             options=chrome_options
         )
+    
+    def tearDown(self):
+        # Close the browser after test
+        self.driver.quit()
     
     def test_home_page(self):
         # Visit the application URL
