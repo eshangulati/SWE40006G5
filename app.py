@@ -1,28 +1,10 @@
 from flask import Flask, request
-from prometheus_client import Counter, Histogram, generate_latest
-import time
-import random
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 
-# Create Prometheus metrics
-REQUEST_COUNT = Counter('http_requests_total', 'Total webapp request count', ['method', 'endpoint'])
-REQUEST_LATENCY = Histogram('http_request_duration_seconds', 'Request latency', ['method', 'endpoint'])
-
-@app.before_request
-def before_request():
-    request.start_time = time.time()
-
-@app.after_request
-def after_request(response):
-    REQUEST_COUNT.labels(request.method, request.path).inc()
-    latency = time.time() - request.start_time
-    REQUEST_LATENCY.labels(request.method, request.path).observe(latency)
-    return response
-
-@app.route('/metrics')
-def metrics():
-    return generate_latest(), 200
+# Setup Prometheus Metrics
+metrics = PrometheusMetrics(app)
 
 
 @app.route('/')
