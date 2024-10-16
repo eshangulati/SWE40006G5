@@ -114,8 +114,6 @@ def mul():
     """
 
 @app.route('/random')
-@metrics.do_not_track()
-@metrics.counter('random_number_counter', 'Number of random numbers generated')
 def random_number():
     num = random.randint(1, 1000)
     return f"""
@@ -151,11 +149,7 @@ def metrics():
     multiprocess.MultiProcessCollector(registry)
     return generate_latest(registry)
 
-@app.route('/test')
-@metrics.counter('test_counter', 'Test counter')
-def test():
-    logging.info('Test endpoint accessed')
-    return 'Test successful'
+
 
 if __name__ == '__main__':
     # Log all available routes
