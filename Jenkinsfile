@@ -21,6 +21,13 @@ pipeline {
             }
         }
 
+        stage('Test Metrics Endpoint') {
+            steps {
+                script {
+                    sh 'curl http://44.223.169.199/metrics'
+                }
+            }
+        }
 
         stage('Run Unit Tests') {
             steps {
