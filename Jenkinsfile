@@ -21,6 +21,19 @@ pipeline {
             }
         }
 
+        stage('Run Flask App') {
+            steps {
+                sh 'docker run -d --name myapp -p 80:80 myapp:latest'
+            }
+        }
+        
+        stage('Print Logs') {
+            steps {
+                // Print the logs of the running Flask container to show available routes
+                sh 'docker logs myapp'
+            }
+        }
+
         stage('Run Unit Tests') {
             steps {
                 // Run the tests inside the Docker container
