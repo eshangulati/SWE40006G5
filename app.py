@@ -20,6 +20,11 @@ def after_request(response):
     REQUEST_LATENCY.labels(request.method, request.path).observe(latency)
     return response
 
+@app.route('/metrics')
+def metrics():
+    return generate_latest(), 200
+
+
 @app.route('/')
 def hello_world():
     return """
@@ -154,10 +159,6 @@ def random_number():
         </body>
         </html>
     """
-
-@app.route('/metrics')
-def metrics():
-    return generate_latest(), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
