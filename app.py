@@ -1,14 +1,11 @@
 from flask import Flask, request
-from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter, generate_latest, multiprocess, CollectorRegistry
 import random
 
 app = Flask(__name__)
 
-# Setup Prometheus Metrics
-metrics = PrometheusMetrics(app, path='/metrics')
-
-# Static information as metric
-metrics.info('app_info', 'Application info', version='1.0.3')
+REQUESTS = Counter('app_requests_total', 'Total number of requests to the app')
+RANDOM_NUMBER_COUNTER = Counter('random_number_counter_total', 'Number of random numbers generated')
 
 
 @app.route('/')
@@ -147,6 +144,12 @@ def random_number():
     </body>
     </html>
     """
+@app.route('/metrics')
+def metrics():
+    # Expose Prometheus metrics at /metrics endpoint
+    registry = CollectorRegistry()
+    multiprocess.MultiProcessCollector(registry)
+    return generate_latest(registry)
 
 @app.route('/test')
 @metrics.counter('test_counter', 'Test counter')
