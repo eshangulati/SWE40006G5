@@ -174,4 +174,4 @@ if __name__ == '__main__':
         print(f"Endpoint: {rule.endpoint}, Route: {rule.rule}")
         logging.info(f"Endpoint: {rule.endpoint}, Route: {rule.rule}")
 
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True,use_reloader=False)
