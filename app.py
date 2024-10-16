@@ -5,7 +5,7 @@ import random
 app = Flask(__name__)
 
 # Setup Prometheus Metrics
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, path='/metrics')
 
 # Static information as metric
 metrics.info('app_info', 'Application info', version='1.0.3')
@@ -146,9 +146,13 @@ def random_number():
     </body>
     </html>
     """
+@app.route('/test')
+@metrics.counter('test_counter', 'Test counter')
+def test():
+    return 'Test successful'
 
 if __name__ == '__main__':
     print("\nAvailable routes in the Flask app:")
     for rule in app.url_map.iter_rules():
         print(f"Endpoint: {rule.endpoint}, Route: {rule.rule}")
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80, debug=True)
