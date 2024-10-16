@@ -22,13 +22,6 @@ pipeline {
         }
 
 
-        stage('Print Logs') {
-            steps {
-                // Print the logs of the running Flask container to show available routes
-                sh 'docker logs myapp'
-            }
-        }
-
         stage('Run Unit Tests') {
             steps {
                 // Run the tests inside the Docker container
