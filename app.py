@@ -1,16 +1,27 @@
 from flask import Flask, request
-from prometheus_flask_exporter import PrometheusMetrics
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Counter
+from prometheus_client import Counter, Histogram, generate_latest
+import time
+import random
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)  # Add this line to expose metrics
 
-c = Counter('python_request_operations_total', 'The total number of processed requests')
+# Create Prometheus metrics
+REQUEST_COUNT = Counter('http_requests_total', 'Total webapp request count', ['method', 'endpoint'])
+REQUEST_LATENCY = Histogram('http_request_duration_seconds', 'Request latency', ['method', 'endpoint'])
 
+@app.before_request
+def before_request():
+    request.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    REQUEST_COUNT.labels(request.method, request.path).inc()
+    latency = time.time() - request.start_time
+    REQUEST_LATENCY.labels(request.method, request.path).observe(latency)
+    return response
 
 @app.route('/')
 def hello_world():
-    c.inc()
     return """
         <!DOCTYPE html>
         <html data-theme="light">
@@ -40,15 +51,11 @@ def hello_world():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
-    if request.method == 'POST':
-        num1 = request.form.get('num1')
-        num1 = num1 if num1 else 0
-
-        num2 = request.form.get('num2')
-        num2 = num2 if num2 else 0
-
-        sum = int(num1) + int(num2)
-
+    num1 = request.form.get('num1') if request.method == 'POST' else ''
+    num2 = request.form.get('num2') if request.method == 'POST' else ''
+    
+    sum = int(num1) + int(num2) if num1 and num2 else 0
+    
     return f"""
         <!DOCTYPE html>
         <html data-theme="light">
@@ -70,8 +77,8 @@ def add():
             <main>
                 <h1>Add Two Numbers</h1>
                 <form method="post" action="add">
-                    <input type="number" name="num1" placeholder="First number" value="{num1 if request.method == 'POST' else ''}"> <br>
-                    <input type="number" name="num2" placeholder="Second number" value="{num2 if request.method == 'POST' else ''}"> <br>
+                    <input type="number" name="num1" placeholder="First number" value="{num1}"> <br>
+                    <input type="number" name="num2" placeholder="Second number" value="{num2}"> <br>
                     <input type="submit" name="submit" value="Add">
                 </form>
                 {'<p>The sum of ' + str(num1) + ' and ' + str(num2) + ' is ' + str(sum) + '</p>' if request.method == 'POST' else ''}
@@ -82,15 +89,11 @@ def add():
 
 @app.route('/mul', methods=['GET', 'POST'])
 def mul():
-    if request.method == 'POST':
-        num1 = request.form.get('num1')
-        num1 = num1 if num1 else 0
-
-        num2 = request.form.get('num2')
-        num2 = num2 if num2 else 0
-
-        product = int(num1) * int(num2)
-
+    num1 = request.form.get('num1') if request.method == 'POST' else ''
+    num2 = request.form.get('num2') if request.method == 'POST' else ''
+    
+    product = int(num1) * int(num2) if num1 and num2 else 0
+    
     return f"""
         <!DOCTYPE html>
         <html data-theme="light">
@@ -112,8 +115,8 @@ def mul():
             <main>
                 <h1>Multiply Two Numbers</h1>
                 <form method="post" action="mul">
-                    <input type="number" name="num1" placeholder="First number" value="{num1 if request.method == 'POST' else ''}"> <br>
-                    <input type="number" name="num2" placeholder="Second number" value="{num2 if request.method == 'POST' else ''}"> <br>
+                    <input type="number" name="num1" placeholder="First number" value="{num1}"> <br>
+                    <input type="number" name="num2" placeholder="Second number" value="{num2}"> <br>
                     <input type="submit" name="submit" value="Multiply">
                 </form>
                 {'<p>The product of ' + str(num1) + ' and ' + str(num2) + ' is ' + str(product) + '</p>' if request.method == 'POST' else ''}
@@ -123,8 +126,7 @@ def mul():
     """
 
 @app.route('/random')
-def random():
-    import random
+def random_number():
     num = random.randint(1, 1000)
     return f"""
         <!DOCTYPE html>
@@ -153,6 +155,9 @@ def random():
         </html>
     """
 
+@app.route('/metrics')
+def metrics():
+    return generate_latest(), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
