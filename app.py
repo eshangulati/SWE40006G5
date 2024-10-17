@@ -32,6 +32,7 @@ def hello_world():
             <h1>Home</h1>
             <p>Welcome to my website</p>
             <p>Click on the links above to perform some operations: add or multiply two numbers, or generate a random number between 1-1000</p>
+            <p>Project by Eshan Gulati, Khang Vo, Al Hamid Arath</p>
         </main>
     </body>
     </html>
