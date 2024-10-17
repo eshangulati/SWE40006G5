@@ -53,7 +53,7 @@ pipeline {
                         'docker pull buffy1809/myapp:latest && \\
                         docker stop myapp || true && \\
                         docker rm myapp || true && \\
-                        docker run -d --name myapp -p 80:80 buffy1809/myapp:latest'
+                        docker run -d --name myapp -p 8080:80 buffy1809/myapp:latest'
                     """
                 }
             }
