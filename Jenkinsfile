@@ -6,7 +6,6 @@ pipeline {
         TEST_SERVER_IP = '44.223.169.199'
         PRODUCTION_SERVER_IP = '3.213.22.15'
         SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa'
-        DOCKER_CREDENTIALS = credentials('docker-credentials') 
         DOCKER_REPO = 'buffy1809/myapp'
     }
 
@@ -25,22 +24,23 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    // Login to Docker Hub using credentials
-                    sh "echo \$DOCKER_CREDENTIALS_PSW | docker login -u \$DOCKER_CREDENTIALS_USR --password-stdin"
-            
-                    // Tag the image with the Docker Hub repo
-                    sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
-            
-                    // Push the new image to Docker Hub
-                    sh "docker push $DOCKER_REPO:latest"
+                withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        // Login to Docker Hub
+                        sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin"
+                
+                        // Tag the image with the Docker Hub repo
+                        sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
+                
+                        // Push the new image to Docker Hub
+                        sh "docker push $DOCKER_REPO:latest"
+                    }
                 }
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                // Run the tests inside the Docker container
                 sh 'docker run --rm $DOCKER_IMAGE_NAME pytest tests/'
             }
         }
@@ -48,7 +48,6 @@ pipeline {
         stage('Deploy to Test Server') {
             steps {
                 script {
-                    // Directly SSH using the private key
                     sh """
                     ssh -i $SSH_KEY_PATH -o StrictHostKeyChecking=no ec2-user@$TEST_SERVER_IP \\
                         'docker pull buffy1809/myapp:latest && \\
