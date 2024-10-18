@@ -13,6 +13,12 @@ COPY . /app
 # Set PYTHONPATH to make sure app.py can be found
 ENV PYTHONPATH=/app
 
+# Set the environment variable in Dockerfile
+ENV PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_multiproc_dir
+
+# Make sure the directory exists
+RUN mkdir -p /tmp/prometheus_multiproc_dir
+
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
