@@ -6,8 +6,7 @@ pipeline {
         TEST_SERVER_IP = '44.223.169.199'
         PRODUCTION_SERVER_IP = '3.213.22.15'
         SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa'
-        DOCKER_USERNAME = credentials('docker-username') // Store your Docker username
-        DOCKER_PASSWORD = credentials('docker-password')
+        DOCKER_CREDENTIALS = credentials('docker-credentials') 
         DOCKER_REPO = 'buffy1809/myapp'
     }
 
@@ -28,11 +27,11 @@ pipeline {
             steps {
                 script {
                     // Login to Docker Hub
-                    sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                    
+                    sh "echo \$DOCKER_CREDENTIALS_PSW | docker login -u \$DOCKER_CREDENTIALS_USR --password-stdin"
+            
                     // Tag the image with the Docker Hub repo
                     sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
-                    
+            
                     // Push the new image to Docker Hub
                     sh "docker push $DOCKER_REPO:latest"
                 }
