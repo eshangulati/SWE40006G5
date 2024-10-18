@@ -116,6 +116,7 @@ def mul():
 
 @app.route('/random')
 def random_number():
+    RANDOM_NUMBER_COUNTER.inc()
     num = random.randint(1, 1000)
     return f"""
     <!DOCTYPE html>
