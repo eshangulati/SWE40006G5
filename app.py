@@ -7,6 +7,9 @@ app = Flask(__name__)
 REQUESTS = Counter('app_requests_total', 'Total number of requests to the app')
 RANDOM_NUMBER_COUNTER = Counter('random_number_counter_total', 'Number of random numbers generated')
 
+@app.before_request
+def increment_request_count():
+    REQUESTS.inc()
 
 @app.route('/')
 def hello_world():
