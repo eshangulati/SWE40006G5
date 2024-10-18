@@ -26,7 +26,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Login to Docker Hub
+                    // Login to Docker Hub using credentials
                     sh "echo \$DOCKER_CREDENTIALS_PSW | docker login -u \$DOCKER_CREDENTIALS_USR --password-stdin"
             
                     // Tag the image with the Docker Hub repo
@@ -38,14 +38,12 @@ pipeline {
             }
         }
 
-
         stage('Run Unit Tests') {
             steps {
                 // Run the tests inside the Docker container
                 sh 'docker run --rm $DOCKER_IMAGE_NAME pytest tests/'
             }
         }
-
 
         stage('Deploy to Test Server') {
             steps {
