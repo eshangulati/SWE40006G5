@@ -24,19 +24,12 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    script {
-                        // Login to Docker Hub
-                        sh 'echo $DOCKER_PASSWORD > password.txt'
-                        sh 'cat password.txt | docker login -u $DOCKER_USERNAME --password-stdin'
-                        sh 'rm password.txt'
-                
-                        // Tag the image with the Docker Hub repo
-                        sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
-                
-                        // Push the new image to Docker Hub
-                        sh "docker push $DOCKER_REPO:latest"
-                    }
+                script {
+                    // Tag the image with the Docker Hub repo
+                    sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
+            
+                    // Push the new image to Docker Hub
+                    sh "docker push $DOCKER_REPO:latest"
                 }
             }
         }
