@@ -27,7 +27,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
                         // Login to Docker Hub
-                        sh 'echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin'
+                        sh 'echo $DOCKER_PASSWORD > password.txt'
+                        sh 'cat password.txt | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh 'rm password.txt'
                 
                         // Tag the image with the Docker Hub repo
                         sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
