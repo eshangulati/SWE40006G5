@@ -22,14 +22,23 @@
         groups: docker
         append: yes
 
-    - name: Ensure pip is installed (Python package installer)
+    - name: Ensure Python 3 and pip3 are installed
       yum:
-        name: python-pip
+        name:
+          - python3
+          - python3-pip
         state: present
+
+    - name: Upgrade pip to the latest version
+      pip:
+        name: pip
+        state: latest
+        executable: pip3
 
     - name: Install Docker SDK for Python
       pip:
         name: docker
+        executable: pip3  # Specifies to use pip3, ensuring it uses Python 3
 
     - name: Pull latest Docker image
       docker_image:
