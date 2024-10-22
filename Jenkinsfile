@@ -25,10 +25,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Tag the image with the Docker Hub repo
                     sh "docker tag $DOCKER_IMAGE_NAME:latest $DOCKER_REPO:latest"
-            
-                    // Push the new image to Docker Hub
                     sh "docker push $DOCKER_REPO:latest"
                 }
             }
@@ -37,6 +34,15 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh 'docker run --rm $DOCKER_IMAGE_NAME pytest tests/'
+            }
+        }
+
+        stage('Prepare Servers and Deploy with Ansible') {
+            steps {
+                script {
+                    // Execute the Ansible playbook
+                    sh 'ansible-playbook playbook.yml'
+                }
             }
         }
 
