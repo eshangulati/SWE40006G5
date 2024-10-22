@@ -2,6 +2,8 @@
 - name: Prepare Servers for Docker Deployment
   hosts: all
   become: yes  # Required to gain root privileges
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Install Docker on AWS Linux
