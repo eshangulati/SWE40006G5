@@ -37,14 +37,7 @@ pipeline {
             }
         }
 
-        stage('Prepare Servers and Deploy with Ansible') {
-            steps {
-                script {
-                    // Execute the Ansible playbook
-                    sh 'ansible-playbook playbook.yml'
-                }
-            }
-        }
+        
 
         stage('Deploy to Test Server') {
             steps {
