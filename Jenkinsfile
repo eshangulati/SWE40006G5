@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = 'myapp'
-        TEST_SERVER_IP = '44.223.169.199'
-        PRODUCTION_SERVER_IP = '3.213.22.15'
+        TEST_SERVER_IP = '3.213.22.15'
+        PRODUCTION_SERVER_IP = '44.223.169.199'
         SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa'
         DOCKER_REPO = 'buffy1809/myapp'
     }
@@ -47,7 +47,7 @@ pipeline {
                         'docker pull buffy1809/myapp:latest && \\
                         docker stop myapp || true && \\
                         docker rm myapp || true && \\
-                        docker run -d --name myapp -p 80:80 buffy1809/myapp:latest'
+                        docker run -d --name myapp -p 8081:80 buffy1809/myapp:latest'
                     """
                 }
             }
