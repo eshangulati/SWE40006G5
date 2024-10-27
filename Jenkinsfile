@@ -52,7 +52,7 @@ pipeline {
                     'docker pull buffy1809/myapp:latest && \\
                     docker stop myapp || true && \\
                     docker rm myapp || true && \\
-                    docker run -d --name myapp -p 8081:80 buffy1809/myapp:latest --restart unless-stopped'
+                    docker run -d --name myapp -p 8081:80 --restart unless-stopped buffy1809/myapp:latest'
                 """
             }
         }
@@ -79,7 +79,7 @@ pipeline {
                     'docker pull buffy1809/myapp:latest && \\
                     docker stop myapp || true && \\
                     docker rm myapp || true && \\
-                    docker run -d --name myapp -p 8081:80 buffy1809/myapp:latest --restart unless-stopped'
+                    docker run -d --name myapp -p 8081:80 --restart unless-stopped buffy1809/myapp:latest'
                 """
             }
         }
