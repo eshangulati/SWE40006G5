@@ -3,6 +3,14 @@
   become: true
   tasks:
 
+  - name: Create directory for instrumentation
+    file:
+      path: ~/instrumentations
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
   - name: Copy docker-compose.yml
     copy:
       src: instrumentations/docker-compose.yml
