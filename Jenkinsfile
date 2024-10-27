@@ -41,6 +41,7 @@ pipeline {
             steps {
                 ansiblePlaybook inventory: 'ansible/inventory.ini', playbook: 'ansible/docker-setup.yml'
                 ansiblePlaybook inventory: 'ansible/inventory.ini', playbook: 'ansible/nginx-setup.yml'
+                ansiblePlaybook inventory: 'ansible/inventory.ini', playbook: 'ansible/instrumentation-setup.yml'
             }
         }
 
