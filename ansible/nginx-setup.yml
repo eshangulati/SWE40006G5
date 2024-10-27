@@ -1,0 +1,23 @@
+- name: Config nginx
+  hosts: test,prod
+  become: true
+  tasks:
+
+  - name: Install nginx
+    command: amazon-linux-extras install nginx1=latest -y
+    args:
+      creates: /etc/nginx
+
+  - name: Add nginx configuration
+    copy:
+      src: flaskapp.conf
+      dest: /etc/nginx/conf.d/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Ensure nginx is running
+    systemd:
+      name: nginx
+      state: reloaded
+      enabled: true

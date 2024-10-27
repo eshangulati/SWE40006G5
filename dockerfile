@@ -7,8 +7,12 @@ WORKDIR /app
 # Copy the requirements file into the image
 COPY requirements.txt /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the application code into the image
+COPY app.py /app
+
+# Copy the tests into the image
+COPY unittests /app/unittests
+COPY seleniumtests /app/seleniumtests
 
 # Set PYTHONPATH to make sure app.py can be found
 ENV PYTHONPATH=/app
