@@ -10,7 +10,7 @@
 
   - name: Add nginx configuration
     copy:
-      src: flaskapp.conf
+      src: nginx/flaskapp.conf
       dest: /etc/nginx/conf.d/
       owner: root
       group: root

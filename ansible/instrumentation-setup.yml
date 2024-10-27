@@ -1,0 +1,46 @@
+- name: Config instrumentation
+  hosts: prod
+  become: true
+  tasks:
+
+  - name: Copy docker-compose.yml
+    copy:
+      src: instrumentations/docker-compose.yml
+      dest: ~/instrumentations/docker-compose.yml
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Copy prometheus.yml
+    copy:
+      src: instrumentations/prometheus.yml
+      dest: ~/instrumentations/prometheus.yml
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Run docker compose
+    command: docker compose up -d
+    args:
+      chdir: ~/instrumentation
+
+  - name: Ensure prometheus is running
+    wait_for:
+      port: 9090
+      delay: 10
+      timeout: 60
+      state: started
+
+  - name: Ensure node-exporter is running
+    wait_for:
+      port: 9100
+      delay: 10
+      timeout: 60
+      state: started
+
+  - name: Ensure grafana is running
+    wait_for:
+      port: 3000
+      delay: 10
+      timeout: 60
+      state: started
